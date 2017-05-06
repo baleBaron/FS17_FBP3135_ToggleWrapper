@@ -55,10 +55,10 @@ function TogglableBaleWrapper:update(dt)
 end
 
 function TogglableBaleWrapper:draw()
-local statusText = not self.isBaleWrapperDisabled and "[ENABLED]" or "[DISABLED]"
+    local statusText = not self.isBaleWrapperDisabled and g_i18n:getText("TGWP_ISENABLED") or g_i18n:getText("TGWP_ISDISABLED")
 
     if self.isClient and self:getIsActiveForInput() then 
-        g_currentMission:addHelpButtonText("BaleWrapper is "..statusText, InputBinding.IMPLEMENT_EXTRA4, nil, GS_PRIO_HIGH);
+        g_currentMission:addHelpButtonText(statusText, InputBinding.IMPLEMENT_EXTRA4, nil, GS_PRIO_HIGH);
     end
 end
 
