@@ -9,20 +9,26 @@ function TogglableBaleWrapper.prerequisitesPresent(specializations)
 end
 
 function TogglableBaleWrapper:load(savegame)
-    self.isBaleWrapperDisabled = Utils.getNoNil(getXMLBool(savegame.xmlFile, savegame.key .. "#isBaleWrapperDisabled"), false)
-    self.isWrappingForced = Utils.getNoNil(getXMLFloat(savegame.xmlFile, savegame.key.."#wrapperTime"),0) ~= 0 -- If wrapping is in progress, disabling of wrapper is overridden
     
     self.setWrapperDisabled = TogglableBaleWrapper.setWrapperDisabled
     self.doStateChange      = Utils.overwrittenFunction(self.doStateChange,     TogglableBaleWrapper.doStateChange)
     self.pickupWrapperBale  = Utils.overwrittenFunction(self.pickupWrapperBale, TogglableBaleWrapper.pickupWrapperBale)
 
-    --install dryGrass_windrow as wrappable if grass_windrow is present
-    for _,baleCategory in pairs({"roundBaleWrapper", "squareBaleWrapper"}) do
-        local grassBaleType     = self[baleCategory].allowedBaleTypes[FillUtil.FILLTYPE_GRASS_WINDROW]
-        local dryGrassBaleType  = self[baleCategory].allowedBaleTypes[FillUtil.FILLTYPE_DRYGRASS_WINDROW]
+    self.isBaleWrapperDisabled = false
+    self.isWrappingForced      = false
+
+    if savegame ~= nil and not savegame.resetVehicles then
+        self.isBaleWrapperDisabled = Utils.getNoNil(getXMLBool(savegame.xmlFile, savegame.key .. "#isBaleWrapperDisabled"), false)
+        self.isWrappingForced = Utils.getNoNil(getXMLFloat(savegame.xmlFile, savegame.key.."#wrapperTime"),0) ~= 0 -- If wrapping is in progress, disabling of wrapper is overridden
         
-        if grassBaleType ~= nil and dryGrassBaleType == nil then
-            self[baleCategory].allowedBaleTypes[FillUtil.FILLTYPE_DRYGRASS_WINDROW] = grassBaleType
+        --install dryGrass_windrow as wrappable if grass_windrow is present
+        for _,baleCategory in pairs({"roundBaleWrapper", "squareBaleWrapper"}) do
+            local grassBaleType     = self[baleCategory].allowedBaleTypes[FillUtil.FILLTYPE_GRASS_WINDROW]
+            local dryGrassBaleType  = self[baleCategory].allowedBaleTypes[FillUtil.FILLTYPE_DRYGRASS_WINDROW]
+            
+            if grassBaleType ~= nil and dryGrassBaleType == nil then
+                self[baleCategory].allowedBaleTypes[FillUtil.FILLTYPE_DRYGRASS_WINDROW] = grassBaleType
+            end
         end
     end
 end
