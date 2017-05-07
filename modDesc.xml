@@ -7,10 +7,10 @@
     </title>
     <description>
         <en>
-            <![CDATA[Allows wrapping on the FBP 3135 to be enabled or disabled.]]>
+            <![CDATA[Allows bale wrapping with the KUHN FBP 3135 to be enabled or disabled.]]>
         </en>
         <de>
-            <![CDATA[Ermöglicht die aktivierung oder deaktivierung der ballenwicklung auf dem FBP 3135.]]> <!-- google translate -->
+            <![CDATA[Ermöglicht das ballenwickeln mit dem KUHN FBP 3135 aktiviert oder deaktiviert.]]> <!-- google translate -->
         </de>
     </description>
     <iconFilename>icon.dds</iconFilename>
@@ -25,11 +25,11 @@
 
     <l10n>
         <text name="TGWP_ISENABLED">
-            <en>BaleWrapper is [ON]</en>
+            <en>Bale wrapper is [ON]</en>
             <de>Ballenwickler ist [AN] </de> <!-- google translate -->
         </text>
         <text name="TGWP_ISDISABLED">
-            <en>BaleWrapper is [OFF]</en>
+            <en>Bale wrapper is [OFF]</en>
             <de>Ballenwickler ist [AUS] </de> <!-- google translate -->
         </text>
     </l10n>
