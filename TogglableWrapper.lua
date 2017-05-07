@@ -1,5 +1,7 @@
 --
--- TogglableBaleWrapper
+-- TogglableBaleWrapper specialization
+--
+-- by: baron <mve.karlsson@gmail.com>
 --
 
 TogglableBaleWrapper = {};
