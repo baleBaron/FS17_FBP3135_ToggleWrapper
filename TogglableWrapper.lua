@@ -26,12 +26,12 @@ function TogglableBaleWrapper:load(savegame)
         end
     end
     
-    self.isBaleWrapperDisabled = false
-    self.isWrappingForced      = false
+    self.isBaleWrapperDisabled  = false
+    self.isWrappingForced       = false -- Used to override isBaleWrapperDisabled, this is needed when savegame contains a wrap in progress
 
     if savegame ~= nil and not savegame.resetVehicles then
         self.isBaleWrapperDisabled = Utils.getNoNil(getXMLBool(savegame.xmlFile, savegame.key .. "#isBaleWrapperDisabled"), false)
-        self.isWrappingForced = Utils.getNoNil(getXMLFloat(savegame.xmlFile, savegame.key.."#wrapperTime"),0) ~= 0 -- If wrapping is in progress, disabling of wrapper is overridden
+        self.isWrappingForced = Utils.getNoNil(getXMLFloat(savegame.xmlFile, savegame.key.."#wrapperTime"),0) ~= 0
     end
 end
 
@@ -41,10 +41,12 @@ end
 
 function TogglableBaleWrapper:writeStream(streamId, connection)
     streamWriteBool(streamId, self.isBaleWrapperDisabled)
+    streamWriteBool(streamId, self.isWrappingForced)
 end
 
 function TogglableBaleWrapper:readStream(streamId, connection)
     self.isBaleWrapperDisabled = streamReadBool(streamId)
+    self.isWrappingForced = streamReadBool(streamId)
 end
 
 function TogglableBaleWrapper:delete()
@@ -71,16 +73,19 @@ function TogglableBaleWrapper:draw()
 end
 
 function TogglableBaleWrapper:doStateChange(superFunc, id, nearestBaleServerId)
-    if id == BaleWrapper.CHANGE_WRAPPING_START and self.isBaleWrapperDisabled and not self.isWrappingForced then
-        self.baleWrapperState = BaleWrapper.STATE_WRAPPER_FINSIHED
-    else
-        superFunc(self, id, nearestBaleServerId)
-    end  
+    if id == BaleWrapper.CHANGE_WRAPPING_START then
+        if self.isBaleWrapperDisabled and not self.isWrappingForced then
+            self.baleWrapperState = BaleWrapper.STATE_WRAPPER_FINSIHED
+            return
+        end
+        
+        self.isWrappingForced = false -- Reset force wrapping state
+    end
+    
+    superFunc(self, id, nearestBaleServerId)
 end
 
 function TogglableBaleWrapper:pickupWrapperBale(superFunc, bale, baleType)
-    self.isWrappingForced = false -- This bale is not forced to wrap
-
     if self.isBaleWrapperDisabled then 
         g_server:broadcastEvent(BaleWrapperStateEvent:new(self, BaleWrapper.CHANGE_GRAB_BALE, networkGetObjectId(bale)), true, nil, self)
     else
